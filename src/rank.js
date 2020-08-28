@@ -1,8 +1,6 @@
 function voyageRisk (voyage) {
   let result = 1;
-  if (voyage.length > 4) {
-    result += 2;
-  }
+  result = addResultByVoyage(voyage, 4, 2, result);
   result = addResultByVoyage(voyage, 8, voyage.length - 8, result);
   if ((isIncludeChinaOrEastIndies(voyage))) {
     result += 4;
@@ -57,6 +55,7 @@ function rating (voyage, history) {
   const vpf = voyageProfitFactor(voyage, history);
   const vr = voyageRisk(voyage);
   const chr = captainHistoryRisk(voyage, history);
+  return getSegment(vpf, vr, chr);
   if (vpf * 3 > (vr + chr * 2)) {
     return 'A';
   }
@@ -64,7 +63,14 @@ function rating (voyage, history) {
     return 'B';
   }
 }
-
+function getSegment(vpf, vr, chr){
+    if (vpf * 3 > (vr + chr * 2)) {
+        return 'A';
+      }
+      else {
+        return 'B';
+    }
+}
 function isIncludeChinaOrEastIndies(voyage){
     return [
           'china',
