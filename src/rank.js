@@ -1,20 +1,16 @@
 function voyageRisk (voyage) {
   let result = 1;
-  result = addResultByVoyage(voyage, 4, 2, result);
-  result = addResultByVoyage(voyage, 8, voyage.length - 8, result);
+  result += calculateResultIncrement(voyage, 4, 2);
+  result += calculateResultIncrement(voyage, 8, voyage.length - 8);
   if ((isIncludeChinaOrEastIndies(voyage))) {
     result += 4;
   }
   return Math.max(result, 0);
 }
 
-function hasChina (history) {
-  return history.some(v => 'china' === v.zone);
-}
-
 function captainHistoryRisk (voyage, history) {
   let result = 5;
-  result = addResultByHistory(history, 4, -4, result);
+  result += calculateResultIncrement(history, 4, -4);
   result += history.filter(v => v.profit < 0).length;
   if (isInChinaAndHasHistory(voyage, history)) {
     result -= 2;
@@ -26,29 +22,28 @@ function voyageProfitFactor (voyage, history) {
   let result = 2;
   if (isIncludeChinaOrEastIndies(voyage)) {
       result += 1;
-    }
+   }
   if (isInChinaAndHasHistory(voyage, history)) {
     result += 3;
-    result = addResultByHistory(history, 10, 1, result);
-    result = addResultByVoyage(voyage, 12, 1, result);
-    result = addResultByVoyage(voyage, 18, -1, result);
+    result += calculateResultIncrement(history, 10, 1);
+    result += calculateResultIncrement(voyage, 12, 1);
+    result += calculateResultIncrement(voyage, 18, -1);
   } else {
-    result = addResultByHistory(history, 8, 1, result);
-    result = addResultByVoyage(voyage, 14, -1, result);
+    result += calculateResultIncrement(history, 8, 1);
+    result += calculateResultIncrement(voyage, 14, -1);
   }
   return result;
 }
 
-function addResultByHistory(history, boundaryValue, increment, result){
-    if(history.length > boundaryValue)
-        result += increment;
-    return result;
+function hasChina (history) {
+
+  return history.some(v => 'china' === v.zone);
 }
 
-function addResultByVoyage(voyage, boundaryValue, increment, result){
-    if(voyage.length > boundaryValue)
-        result += increment;
-    return result;
+function calculateResultIncrement(object, boundaryValue, increment){
+    if(object.length > boundaryValue)
+        return increment
+    return 0;
 }
 
 function rating (voyage, history) {
@@ -56,13 +51,8 @@ function rating (voyage, history) {
   const vr = voyageRisk(voyage);
   const chr = captainHistoryRisk(voyage, history);
   return getSegment(vpf, vr, chr);
-  if (vpf * 3 > (vr + chr * 2)) {
-    return 'A';
-  }
-  else {
-    return 'B';
-  }
 }
+
 function getSegment(vpf, vr, chr){
     if (vpf * 3 > (vr + chr * 2)) {
         return 'A';
@@ -71,6 +61,7 @@ function getSegment(vpf, vr, chr){
         return 'B';
     }
 }
+
 function isIncludeChinaOrEastIndies(voyage){
     return [
           'china',
@@ -79,6 +70,7 @@ function isIncludeChinaOrEastIndies(voyage){
 }
 
 function isInChinaAndHasHistory(voyage, history){
+
     return voyage.zone === 'china' && hasChina(history);
 }
 
