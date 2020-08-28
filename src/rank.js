@@ -3,9 +3,7 @@ function voyageRisk (voyage) {
   if (voyage.length > 4) {
     result += 2;
   }
-  if (voyage.length > 8) {
-    result += voyage.length - 8;
-  }
+  result = addResultByVoyage(voyage, 8, voyage.length - 8, result);
   if ((isIncludeChinaOrEastIndies(voyage))) {
     result += 4;
   }
@@ -34,21 +32,23 @@ function voyageProfitFactor (voyage, history) {
   if (isInChinaAndHasHistory(voyage, history)) {
     result += 3;
     result = addResultByHistory(history, 10, 1, result);
-    if (voyage.length > 12 && voyage.length < 18) {
-      result += 1;
-    }
-  }
-  else {
+    result = addResultByVoyage(voyage, 12, 1, result);
+    result = addResultByVoyage(voyage, 18, -1, result);
+  } else {
     result = addResultByHistory(history, 8, 1, result);
-    if (voyage.length > 14) {
-      result -= 1;
-    }
+    result = addResultByVoyage(voyage, 14, -1, result);
   }
   return result;
 }
 
 function addResultByHistory(history, boundaryValue, increment, result){
     if(history.length > boundaryValue)
+        result += increment;
+    return result;
+}
+
+function addResultByVoyage(voyage, boundaryValue, increment, result){
+    if(voyage.length > boundaryValue)
         result += increment;
     return result;
 }
