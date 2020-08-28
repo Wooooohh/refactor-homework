@@ -18,7 +18,7 @@ function hasChina (history) {
 
 function captainHistoryRisk (voyage, history) {
   let result = 5;
-  result = addResult(history, 4, -4, result);
+  result = addResultByHistory(history, 4, -4, result);
   result += history.filter(v => v.profit < 0).length;
   if (isInChinaAndHasHistory(voyage, history)) {
     result -= 2;
@@ -33,13 +33,13 @@ function voyageProfitFactor (voyage, history) {
     }
   if (isInChinaAndHasHistory(voyage, history)) {
     result += 3;
-    result = addResult(history, 10, 1, result);
+    result = addResultByHistory(history, 10, 1, result);
     if (voyage.length > 12 && voyage.length < 18) {
       result += 1;
     }
   }
   else {
-    result = addResult(history, 8, 1, result);
+    result = addResultByHistory(history, 8, 1, result);
     if (voyage.length > 14) {
       result -= 1;
     }
@@ -47,12 +47,11 @@ function voyageProfitFactor (voyage, history) {
   return result;
 }
 
-function addResult(history, boundaryValue, increment, result){
+function addResultByHistory(history, boundaryValue, increment, result){
     if(history.length > boundaryValue)
         result += increment;
     return result;
 }
-
 
 function rating (voyage, history) {
   const vpf = voyageProfitFactor(voyage, history);
